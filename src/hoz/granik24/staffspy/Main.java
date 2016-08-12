@@ -78,7 +78,7 @@ public class Main extends JavaPlugin {
     private final static String createTable = "CREATE TABLE IF NOT EXISTS `" + Main.table + "` ("
             + "`player` varchar(30) NOT NULL,"
             + "`UUID` varchar(100) NOT NULL,"
-            + "`logindate` timestamp NOT NULL,"
+            + "`logindate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',"
             + "`alltime` varchar(30) NOT NULL,"
 
             + "INDEX(UUID)" + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";

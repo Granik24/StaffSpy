@@ -34,9 +34,22 @@ public class PlayerListener implements Listener {
                     statement.execute("UPDATE `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "'"); //update record for player
                     r.close();
                 } else {
-                    statement.execute("INSERT INTO `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "', alltime = '0'"); //create new record for player
+                    statement.execute("INSERT INTO `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "', alltime = '0000-00-00 00:00:00'"); //create new record for player
                     r.close();
                 }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        String UUID = e.getPlayer().getUniqueId().toString();
+
+        if (connection != null) {
+            try {
+                statement.execute("UPDATE `" + Main.table + "` SET alltime = TIMEDIFF(NOW(), logindate), uuid = '" + UUID + "'");
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
