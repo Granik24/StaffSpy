@@ -1,0 +1,16 @@
+#
+#	StaffSpy config
+#
+
+# Host where plugin will try to open connection
+host: "host"
+# Database port
+port: 3306
+# Database name
+database: "db"
+# Table name
+table: "StaffSpy"
+# Username for Database
+username: "user"
+# Password for Database
+password: "password"
