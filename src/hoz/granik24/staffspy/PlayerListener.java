@@ -26,12 +26,12 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         String UUID = e.getPlayer().getUniqueId().toString();
         String player = e.getPlayer().getName();
-        if (connection != null) {
+        if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
                 ResultSet r = statement.executeQuery("SELECT * FROM `" + Main.table + "` WHERE uuid = '" + UUID + "'"); //check if player is in db
 
                 if (r.next()) {
-                    statement.execute("UPDATE `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "'"); //update record for player
+                    statement.execute("UPDATE `" + Main.table + "` SET logindate = NOW(), player = '" + player + "' WHERE uuid = '" + UUID + "'"); //update record for player
                     r.close();
                 } else {
                     statement.execute("INSERT INTO `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "', alltime = '0000-00-00 00:00:00'"); //create new record for player
@@ -47,9 +47,11 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         String UUID = e.getPlayer().getUniqueId().toString();
 
-        if (connection != null) {
+        if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
-                statement.execute("UPDATE `" + Main.table + "` SET alltime = TIMEDIFF(NOW(), logindate), uuid = '" + UUID + "'");
+
+                statement.execute("UPDATE `" + Main.table + "` SET alltime = alltime + TIMEDIFF(NOW(), logindate) WHERE uuid = '" + UUID + "'");
+
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
