@@ -17,6 +17,7 @@ import static hoz.granik24.staffspy.Main.statement;
 
 public class PlayerListener implements Listener {
     private Main plugin;
+    private long loginTime;
 
     public PlayerListener(Main p) {
         this.plugin = p;
@@ -29,6 +30,8 @@ public class PlayerListener implements Listener {
         if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
                 ResultSet r = statement.executeQuery("SELECT * FROM `" + Main.table + "` WHERE uuid = '" + UUID + "'"); //check if player is in db
+
+                loginTime = System.currentTimeMillis();
 
                 if (r.next()) {
                     statement.execute("UPDATE `" + Main.table + "` SET logindate = NOW(), player = '" + player + "' WHERE uuid = '" + UUID + "'"); //update record for player
@@ -49,8 +52,15 @@ public class PlayerListener implements Listener {
 
         if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
+                ResultSet r = statement.executeQuery("SELECT * FROM `" + Main.table + "` WHERE uuid = '" + UUID + "'"); //check if player is in db
+                r.next();
 
-                statement.execute("UPDATE `" + Main.table + "` SET alltime = alltime + TIMEDIFF(NOW(), logindate) WHERE uuid = '" + UUID + "'");
+                long allTime = r.getLong("alltime");
+                long currentTime = System.currentTimeMillis() - loginTime;
+                long resultTime = currentTime + allTime;
+
+                statement.execute("UPDATE `" + Main.table + "` SET alltime = '" + resultTime + "' WHERE uuid = '" + UUID + "'");
+                r.close();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
