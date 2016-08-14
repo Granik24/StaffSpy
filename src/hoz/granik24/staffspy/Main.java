@@ -31,6 +31,10 @@ public class Main extends JavaPlugin {
 
         //Open SQL connect
         connectSQL();
+
+        //Register commands
+        Commands e = new Commands();
+        getCommand("staffspy").setExecutor(e);
     }
 
     public void onDisable() {
@@ -78,7 +82,7 @@ public class Main extends JavaPlugin {
     private final static String createTable = "CREATE TABLE IF NOT EXISTS `" + Main.table + "` ("
             + "`player` varchar(30) NOT NULL,"
             + "`UUID` varchar(100) NOT NULL,"
-            + "`logindate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',"
+            + "`logindate` bigint(20) NOT NULL,"
             + "`alltime` varchar(30) NOT NULL,"
 
             + "INDEX(UUID)" + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";

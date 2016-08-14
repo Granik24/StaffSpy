@@ -2,3 +2,8 @@ name: StaffSpy
 author: Granik24
 version: 1.0
 main: hoz.granik24.staffspy.Main
+
+commands:
+   staffspy:
+      description: Staff spy
+      usage: /<command> [hrac]

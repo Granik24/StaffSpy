@@ -37,7 +37,7 @@ public class PlayerListener implements Listener {
                     statement.execute("UPDATE `" + Main.table + "` SET logindate = NOW(), player = '" + player + "' WHERE uuid = '" + UUID + "'"); //update record for player
                     r.close();
                 } else {
-                    statement.execute("INSERT INTO `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "', alltime = '0000-00-00 00:00:00'"); //create new record for player
+                    statement.execute("INSERT INTO `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "', alltime = '0'"); //create new record for player
                     r.close();
                 }
             } catch (SQLException ex) {
