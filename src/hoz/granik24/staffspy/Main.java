@@ -3,25 +3,21 @@ package hoz.granik24.staffspy;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Created by Granik24 on 07.08.2016.
  */
 
 public class Main extends JavaPlugin {
-    private static String host = "host", database = "db", username = "user", password = "pass";
-    private static int port = 3306;
     public static String pluginPrefix = "&8[&aStaff&cSpy&8]&r ";
     public static String table = "StaffSpy";
-    public static Connection connection;
-    public static Statement statement;
+
+    private String host, database, username, password;
+    private int port;
+    private boolean isConfigured = false;
 
     public void onEnable() {
-        getLogger().info(pluginPrefix + "Plugin was successfully enabled!");
+        getLogger().info("Plugin was successfully enabled!");
 
         //Register listener
         PlayerListener playerListener = new PlayerListener(this);
@@ -31,7 +27,12 @@ public class Main extends JavaPlugin {
         loadConfig();
 
         //Open SQL connect
-        connectSQL();
+        if (isConfigured) {
+            Database.connectSQL(host, database, username, password, port);
+        } else {
+            getLogger().warning("You don't have configured your MySQL yet! Set 'isConfigured' to true if everything is ready!");
+            this.setEnabled(false);
+        }
 
         //Register commands
         Commands e = new Commands();
@@ -39,54 +40,11 @@ public class Main extends JavaPlugin {
     }
 
     public void onDisable() {
-        getLogger().info(pluginPrefix + "Plugin was successfully disabled! Goodbye.");
+        getLogger().info("Plugin was successfully disabled! Goodbye.");
 
         //Close SQL connect
-        closeSQL();
+        Database.closeSQL();
     }
-
-    private void connectSQL() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                return;
-
-            } else {
-                Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-                getLogger().info("connecting to the mysql");
-            }
-
-            if (connection != null) {
-                statement = connection.createStatement();
-                getLogger().info("connected");
-                statement.executeUpdate(createTable);
-            } else {
-                getLogger().warning("Can't connect to the MySQL!");
-                this.setEnabled(false);
-            }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            getLogger().warning("Check if all SQL values are right writed. If yes, please, contact developer.");
-        }
-    }
-
-    private void closeSQL() {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private final static String createTable = "CREATE TABLE IF NOT EXISTS `" + Main.table + "` ("
-            + "`player` varchar(30) NOT NULL,"
-            + "`UUID` varchar(100) NOT NULL,"
-            + "`logindate` bigint(20) NOT NULL,"
-            + "`alltime` varchar(30) NOT NULL,"
-
-            + "INDEX(UUID)" + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
     private void loadConfig() {
         if (!new File(getDataFolder(), "config.yml").exists()) {
@@ -94,6 +52,7 @@ public class Main extends JavaPlugin {
         }
         reloadConfig();
         pluginPrefix = getConfig().getString("pluginPrefix").replace("&", "§");
+        isConfigured = getConfig().getBoolean("isConfigured");
         host = getConfig().getString("host");
         port = getConfig().getInt("port");
         database = getConfig().getString("database");

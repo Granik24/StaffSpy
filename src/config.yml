@@ -4,6 +4,8 @@
 
 # Prefix for this awesome plugin, you know :)
 pluginPrefix: "&8[&aStaff&cSpy&8]&r "
+#If your SQL is configured, set this to true
+isConfigured: false
 # Host where plugin will try to open connection
 host: "host"
 # Database port

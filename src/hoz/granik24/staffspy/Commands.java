@@ -7,6 +7,9 @@ import org.bukkit.command.CommandSender;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static hoz.granik24.staffspy.Database.statement;
+import static hoz.granik24.staffspy.Database.connection;
+
 /**
  * Created by Granik24 on 14.08.2016.
  */
@@ -14,15 +17,15 @@ import java.sql.SQLException;
 public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
 
-        if (args.length == 1) {
+        if (args.length == 1 && connection != null) {
             try {
-                ResultSet r = Main.statement.executeQuery("SELECT alltime FROM `" + Main.table + "` WHERE player = '" + args[0] + "'");
+                ResultSet r = statement.executeQuery("SELECT alltime FROM `" + Main.table + "` WHERE player = '" + args[0] + "'");
                 String playerName = args[0];
 
                 if (r.next()) {
                     long allTime = r.getLong("alltime");
-                    long allTimeSec = allTime / 1000;
-                    long allTimeMins = allTimeSec / 60;
+                    long allTimeInSec = allTime / 1000;
+                    long allTimeMins = allTimeInSec / 60;
                     long allTimeHours = allTimeMins / 60;
                     long allTimeDays = allTimeHours / 24;
 
