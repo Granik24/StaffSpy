@@ -15,12 +15,13 @@ import java.sql.Statement;
 public class Main extends JavaPlugin {
     private static String host = "host", database = "db", username = "user", password = "pass";
     private static int port = 3306;
+    public static String pluginPrefix = "&8[&aStaff&cSpy&8]&r ";
     public static String table = "StaffSpy";
     public static Connection connection;
     public static Statement statement;
 
     public void onEnable() {
-        getLogger().info("Enabled");
+        getLogger().info(pluginPrefix + "Plugin was successfully enabled!");
 
         //Register listener
         PlayerListener playerListener = new PlayerListener(this);
@@ -38,7 +39,7 @@ public class Main extends JavaPlugin {
     }
 
     public void onDisable() {
-        getLogger().info("Disabled");
+        getLogger().info(pluginPrefix + "Plugin was successfully disabled! Goodbye.");
 
         //Close SQL connect
         closeSQL();
@@ -92,6 +93,7 @@ public class Main extends JavaPlugin {
             saveDefaultConfig();
         }
         reloadConfig();
+        pluginPrefix = getConfig().getString("pluginPrefix").replace("&", "§");
         host = getConfig().getString("host");
         port = getConfig().getInt("port");
         database = getConfig().getString("database");

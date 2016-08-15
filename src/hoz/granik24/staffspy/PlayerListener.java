@@ -9,9 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import static hoz.granik24.staffspy.Main.connection;
-import static hoz.granik24.staffspy.Main.statement;
-
 /**
  * Created by Granik24 on 07.08.2016.
  */
@@ -31,17 +28,17 @@ public class PlayerListener implements Listener {
         String UUID = e.getPlayer().getUniqueId().toString();
         String player = e.getPlayer().getName();
 
-        if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
+        if (Main.connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
-                ResultSet r = statement.executeQuery("SELECT * FROM `" + Main.table + "` WHERE uuid = '" + UUID + "'"); //check if player is in db
+                ResultSet r = Main.statement.executeQuery("SELECT * FROM `" + Main.table + "` WHERE uuid = '" + UUID + "'"); //check if player is in db
 
                 m.put(UUID, loginTime = System.currentTimeMillis()); // put current time and UUID to hashmap
 
                 if (r.next()) {
-                    statement.execute("UPDATE `" + Main.table + "` SET logindate = NOW(), player = '" + player + "' WHERE uuid = '" + UUID + "'"); //update record for player
+                    Main.statement.execute("UPDATE `" + Main.table + "` SET logindate = NOW(), player = '" + player + "' WHERE uuid = '" + UUID + "'"); //update record for player
                     r.close();
                 } else {
-                    statement.execute("INSERT INTO `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "', alltime = '0'"); //create new record for player
+                    Main.statement.execute("INSERT INTO `" + Main.table + "` SET logindate = NOW(), uuid = '" + UUID + "', player = '" + player + "', alltime = '0'"); //create new record for player
                     r.close();
                 }
             } catch (SQLException ex) {
@@ -54,9 +51,9 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         String UUID = e.getPlayer().getUniqueId().toString();
 
-        if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
+        if (Main.connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
-                ResultSet r = statement.executeQuery("SELECT * FROM `" + Main.table + "` WHERE uuid = '" + UUID + "'"); //check if player is in db
+                ResultSet r = Main.statement.executeQuery("SELECT * FROM `" + Main.table + "` WHERE uuid = '" + UUID + "'"); //check if player is in db
                 r.next();
 
                 t.put(UUID, currentTime = System.currentTimeMillis());
@@ -65,8 +62,10 @@ public class PlayerListener implements Listener {
                 long currentTime = t.get(UUID) - loginTime;
                 long resultTime = currentTime + allTime;
 
-                statement.execute("UPDATE `" + Main.table + "` SET alltime = '" + resultTime + "' WHERE uuid = '" + UUID + "'");
+                Main.statement.execute("UPDATE `" + Main.table + "` SET alltime = '" + resultTime + "' WHERE uuid = '" + UUID + "'");
                 r.close();
+                m.remove(UUID);
+                t.remove(UUID);
 
             } catch (SQLException ex) {
                 ex.printStackTrace();

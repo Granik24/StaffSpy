@@ -7,8 +7,6 @@ import org.bukkit.command.CommandSender;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static hoz.granik24.staffspy.Main.statement;
-
 /**
  * Created by Granik24 on 14.08.2016.
  */
@@ -18,7 +16,7 @@ public class Commands implements CommandExecutor {
 
         if (args.length == 1) {
             try {
-                ResultSet r = statement.executeQuery("SELECT alltime FROM `" + Main.table + "` WHERE player = '" + args[0] + "'");
+                ResultSet r = Main.statement.executeQuery("SELECT alltime FROM `" + Main.table + "` WHERE player = '" + args[0] + "'");
                 String playerName = args[0];
 
                 if (r.next()) {
@@ -28,9 +26,9 @@ public class Commands implements CommandExecutor {
                     long allTimeHours = allTimeMins / 60;
                     long allTimeDays = allTimeHours / 24;
 
-                    sender.sendMessage("Aktualne nahrany cas hrace " + playerName + " je " + allTimeDays + " dnu, " + allTimeHours + " hodin, " + allTimeMins + " minut a " + allTimeSec + " sekund.");
+                    sender.sendMessage(Main.pluginPrefix + "Aktualne nahrany cas hrace " + playerName + " je " + allTimeDays + " dnu, " + allTimeHours + " hodin a " + allTimeMins + " minut.");
                 } else {
-                    sender.sendMessage("Hrac " + playerName + " nebyl nalezen.");
+                    sender.sendMessage(Main.pluginPrefix + "Hrac " + playerName + " nebyl nalezen.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

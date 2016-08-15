@@ -2,6 +2,8 @@
 #	StaffSpy config
 #
 
+# Prefix for this awesome plugin, you know :)
+pluginPrefix: "&8[&aStaff&cSpy&8]&r "
 # Host where plugin will try to open connection
 host: "host"
 # Database port
