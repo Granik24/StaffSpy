@@ -19,28 +19,23 @@ public class Commands implements CommandExecutor {
         if (args.length == 1) {
             try {
                 ResultSet r = statement.executeQuery("SELECT alltime FROM `" + Main.table + "` WHERE player = '" + args[0] + "'");
-                r.next();
+                String playerName = args[0];
 
-                long allTime = r.getLong("alltime");
-                long allTimeSec = allTime / 1000;
-                long allTimeMins = allTimeSec / 60;
-                long allTimeHours = allTimeMins / 60;
-                long allTimeDays = allTimeHours / 24;
+                if (r.next()) {
+                    long allTime = r.getLong("alltime");
+                    long allTimeSec = allTime / 1000;
+                    long allTimeMins = allTimeSec / 60;
+                    long allTimeHours = allTimeMins / 60;
+                    long allTimeDays = allTimeHours / 24;
 
-                if (allTimeDays > 1) {
-                    sender.sendMessage("Aktualne nahrany cas hrace " + args[0] + " je " + allTimeDays + " dnu.");
-                } else if (allTimeMins > 60) {
-                    sender.sendMessage("Aktualne nahrany cas hrace " + args[0] + " je " + allTimeHours + " hodin.");
-                } else if (allTimeMins < 60) {
-                    sender.sendMessage("Aktualne nahrany cas hrace " + args[0] + " je " + allTimeMins + " minut.");
-                } else if (allTimeSec < 60) {
-                    sender.sendMessage("Aktualne nahrany cas hrace " + args[0] + " je " + allTimeSec + " sekund.");
+                    sender.sendMessage("Aktualne nahrany cas hrace " + playerName + " je " + allTimeDays + " dnu, " + allTimeHours + " hodin, " + allTimeMins + " minut a " + allTimeSec + " sekund.");
+                } else {
+                    sender.sendMessage("Hrac " + playerName + " nebyl nalezen.");
                 }
-
-                r.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            return true;
         }
         return false;
     }
