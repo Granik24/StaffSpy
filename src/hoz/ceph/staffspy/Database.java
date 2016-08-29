@@ -1,4 +1,4 @@
-package hoz.granik24.staffspy;
+package hoz.ceph.staffspy;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Granik24 on 15.08.2016.
+ * Created by Ceph on 15.08.2016.
  */
 
 public class Database {
@@ -27,9 +27,10 @@ public class Database {
             }
 
             if (connection != null) {
-                statement = connection.createStatement();
                 Logger.getLogger("Minecraft").log(Level.INFO, "connected");
-                statement.executeUpdate(createTable);
+                statement = connection.createStatement();
+                statement.execute(createUserTable);
+                statement.execute(createTimeTable);
             } else {
                 Logger.getLogger("Minecraft").log(Level.SEVERE, "Can't connect to the MySQL!");
             }
@@ -49,11 +50,18 @@ public class Database {
         }
     }
 
-    private final static String createTable = "CREATE TABLE IF NOT EXISTS `" + Main.table + "` ("
-            + "`player` varchar(30) NOT NULL,"
+    private final static String createUserTable = "CREATE TABLE IF NOT EXISTS `" + Main.tableUsers + "` ("
+            + "`id` int(11) NOT NULL AUTO_INCREMENT,"
+            + "`playerName` varchar(30) NOT NULL,"
             + "`UUID` varchar(100) NOT NULL,"
-            + "`logindate` bigint(20) NOT NULL,"
-            + "`alltime` varchar(30) NOT NULL,"
+            + "`totalPlayed` bigint(20) NOT NULL,"
 
-            + "INDEX(UUID)" + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            + "INDEX(id)" + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+    private final static String createTimeTable = "CREATE TABLE IF NOT EXISTS `" + Main.tableTimes + "` ("
+            + "`playerID` int(11) NOT NULL,"
+            + "`date` DATE NOT NULL,"
+            + "`totalPlayed` bigint(20) NOT NULL,"
+
+            + "INDEX(playerID)" + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 }

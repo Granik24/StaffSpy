@@ -1,21 +1,11 @@
-package hoz.granik24.staffspy;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import static hoz.granik24.staffspy.Database.statement;
-import static hoz.granik24.staffspy.Database.connection;
+package hoz.ceph.staffspy;
 
 /**
- * Created by Granik24 on 14.08.2016.
- */
+ * Created by Ceph on 14.08.2016.
+
 
 public class Commands implements CommandExecutor {
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+    /public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
 
         if (args.length == 1 && connection != null) {
             try {
@@ -41,3 +31,4 @@ public class Commands implements CommandExecutor {
         return false;
     }
 }
+*/

@@ -1,16 +1,17 @@
-package hoz.granik24.staffspy;
+package hoz.ceph.staffspy;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
 /**
- * Created by Granik24 on 07.08.2016.
+ * Created by Ceph on 07.08.2016.
  */
 
 public class Main extends JavaPlugin {
     public static String pluginPrefix = "&8[&aStaff&cSpy&8]&r ";
-    public static String table = "StaffSpy";
+    public static String tableUsers = "SS_USERS";
+    public static String tableTimes = "SS_TIMES";
 
     private String host, database, username, password;
     private int port;
@@ -35,8 +36,8 @@ public class Main extends JavaPlugin {
         }
 
         //Register commands
-        Commands e = new Commands();
-        getCommand("staffspy").setExecutor(e);
+        /*Commands e = new Commands();
+        getCommand("staffspy").setExecutor(e);*/
     }
 
     public void onDisable() {
@@ -56,7 +57,8 @@ public class Main extends JavaPlugin {
         host = getConfig().getString("host");
         port = getConfig().getInt("port");
         database = getConfig().getString("database");
-        table = getConfig().getString("table");
+        tableUsers = getConfig().getString("tableUsers");
+        tableTimes = getConfig().getString("tableTimes");
         username = getConfig().getString("username");
         password = getConfig().getString("password");
         getLogger().info("Config loaded");
