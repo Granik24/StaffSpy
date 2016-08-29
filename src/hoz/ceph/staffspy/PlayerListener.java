@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import static hoz.ceph.staffspy.Database.connection;
+import static hoz.ceph.staffspy.Database.statement;
+
 /**
  * Created by Ceph on 07.08.2016.
  */
@@ -31,19 +34,19 @@ public class PlayerListener implements Listener {
         String UUID = e.getPlayer().getUniqueId().toString();
         String player = e.getPlayer().getName();
 
-        if (Database.connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
+        if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
-                ResultSet users = Database.statement.executeQuery("SELECT * FROM `" + Main.tableUsers + "` WHERE uuid = '" + UUID + "'");
+                ResultSet users = statement.executeQuery("SELECT * FROM `" + Main.tableUsers + "` WHERE uuid = '" + UUID + "'");
                 players.put(UUID, loginTime = System.currentTimeMillis());
 
                 if (users.next()) {
                     int id = users.getInt("id");
-                    Database.statement.execute("UPDATE `" + Main.tableUsers + "` SET playerName = '" + player + "' WHERE UUID = '" + UUID + "'");
-                    ResultSet timesRes = Database.statement.executeQuery("SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
+                    statement.execute("UPDATE `" + Main.tableUsers + "` SET playerName = '" + player + "' WHERE UUID = '" + UUID + "'");
+                    ResultSet timesRes = statement.executeQuery("SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
 
                     if (timesRes.last()) {
                         String date = timesRes.getString("date");
-                        ResultSet idRes = Database.statement.executeQuery("SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
+                        ResultSet idRes = statement.executeQuery("SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
                         if (idRes.last()) {
                             int containsID = idRes.getRow();
 
@@ -53,15 +56,15 @@ public class PlayerListener implements Listener {
 
                             if (containsID < 3) {
                                 if (!currentTime.equals(date)) {
-                                    Database.statement.execute("INSERT INTO `" + Main.tableTimes + "` SET date = NOW(), playerID = '" + id + "', totalPlayed = '0'");
+                                    statement.execute("INSERT INTO `" + Main.tableTimes + "` SET date = NOW(), playerID = '" + id + "', totalPlayed = '0'");
                                 }
                             }
                         }
                     } else {
-                        Database.statement.execute("INSERT INTO `" + Main.tableTimes + "` SET playerID = '" + id + "', date = NOW(), totalPlayed = '0'");
+                        statement.execute("INSERT INTO `" + Main.tableTimes + "` SET playerID = '" + id + "', date = NOW(), totalPlayed = '0'");
                     }
                 } else {
-                    Database.statement.execute("INSERT INTO `" + Main.tableUsers + "` SET playerName = '" + player + "', UUID = '" + UUID + "', totalPlayed = '0'");
+                    statement.execute("INSERT INTO `" + Main.tableUsers + "` SET playerName = '" + player + "', UUID = '" + UUID + "', totalPlayed = '0'");
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -72,12 +75,12 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         String UUID = e.getPlayer().getUniqueId().toString();
-        if (Database.connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
+        if (connection != null && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
-                ResultSet userRes = Database.statement.executeQuery("SELECT * FROM `" + Main.tableUsers + "` WHERE uuid = '" + UUID + "'");
+                ResultSet userRes = statement.executeQuery("SELECT * FROM `" + Main.tableUsers + "` WHERE uuid = '" + UUID + "'");
                 if (userRes.next()) {
                     int id = userRes.getInt("id");
-                    ResultSet dateRes = Database.statement.executeQuery("SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
+                    ResultSet dateRes = statement.executeQuery("SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
 
                     if (dateRes.last()) {
                         times.put(UUID, currentTime = System.currentTimeMillis());
@@ -86,12 +89,12 @@ public class PlayerListener implements Listener {
                         long allPlayed = dateRes.getLong("totalPlayed");
                         long finalTime = currentTime + allPlayed;
                         String dbDate = dateRes.getString("date");
-                        Database.statement.execute("UPDATE `" + Main.tableTimes + "` SET totalPlayed = '" + finalTime + "' WHERE  date = '" + dbDate + "' AND playerID = '" + id + "'");
+                        statement.execute("UPDATE `" + Main.tableTimes + "` SET totalPlayed = '" + finalTime + "' WHERE  date = '" + dbDate + "' AND playerID = '" + id + "'");
 
-                        ResultSet finalRes = Database.statement.executeQuery("SELECT SUM(totalPlayed) as totalPlayed FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
+                        ResultSet finalRes = statement.executeQuery("SELECT SUM(totalPlayed) as totalPlayed FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
                         if (finalRes.next()) {
                             long finalAllPlayed = finalRes.getLong("totalPlayed");
-                            Database.statement.execute("UPDATE `" + Main.tableUsers + "` SET totalPlayed = '" + finalAllPlayed + "' WHERE UUID = '" + UUID + "'");
+                            statement.execute("UPDATE `" + Main.tableUsers + "` SET totalPlayed = '" + finalAllPlayed + "' WHERE UUID = '" + UUID + "'");
 
                             players.remove(UUID);
                             times.remove(UUID);
