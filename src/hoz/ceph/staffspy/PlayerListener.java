@@ -46,19 +46,12 @@ public class PlayerListener implements Listener {
 
                     if (timesRes.last()) {
                         String date = timesRes.getString("date");
-                        ResultSet idRes = statement.executeQuery("SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'");
-                        if (idRes.last()) {
-                            int containsID = idRes.getRow();
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date rawDate = new Date();
+                        String currentTime = dateFormat.format(rawDate);
 
-                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                            Date rawDate = new Date();
-                            String currentTime = dateFormat.format(rawDate);
-
-                            if (containsID < 3) {
-                                if (!currentTime.equals(date)) {
-                                    statement.execute("INSERT INTO `" + Main.tableTimes + "` SET date = NOW(), playerID = '" + id + "', totalPlayed = '0'");
-                                }
-                            }
+                        if (!currentTime.equals(date)) {
+                            statement.execute("INSERT INTO `" + Main.tableTimes + "` SET date = NOW(), playerID = '" + id + "', totalPlayed = '0'");
                         }
                     } else {
                         statement.execute("INSERT INTO `" + Main.tableTimes + "` SET playerID = '" + id + "', date = NOW(), totalPlayed = '0'");

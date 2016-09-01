@@ -23,11 +23,9 @@ public class Database {
             } else {
                 Class.forName("com.mysql.jdbc.Driver");
                 connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-                Logger.getLogger("Minecraft").log(Level.INFO, "connecting to the mysql");
             }
 
             if (connection != null) {
-                Logger.getLogger("Minecraft").log(Level.INFO, "connected");
                 statement = connection.createStatement();
                 statement.execute(createUserTable);
                 statement.execute(createTimeTable);

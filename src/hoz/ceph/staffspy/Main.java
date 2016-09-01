@@ -24,10 +24,6 @@ public class Main extends JavaPlugin {
         PlayerListener playerListener = new PlayerListener(this);
         getServer().getPluginManager().registerEvents(playerListener, this);
 
-        //Register commands
-        Commands e = new Commands();
-        getCommand("staffspy").setExecutor(e);
-
         //Load config
         loadConfig();
 
@@ -40,8 +36,8 @@ public class Main extends JavaPlugin {
         }
 
         //Register commands
-        /*Commands e = new Commands();
-        getCommand("staffspy").setExecutor(e);*/
+        Commands e = new Commands();
+        getCommand("staffspy").setExecutor(e);
     }
 
     public void onDisable() {

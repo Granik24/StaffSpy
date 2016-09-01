@@ -1,6 +1,6 @@
 name: StaffSpy
 author: Ceph
-version: 1.0
+version: 2.0
 main: hoz.ceph.staffspy.Main
 
 commands:
