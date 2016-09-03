@@ -1,9 +1,0 @@
-name: StaffSpy
-author: Ceph
-version: 1.0
-main: hoz.ceph.staffspy.Main
-
-commands:
-   staffspy:
-      description: Will show players statistic
-      usage: /<command> [player]

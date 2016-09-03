@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="StaffSpy">
-    <output-path>$PROJECT_DIR$/out/artifacts/StaffSpy</output-path>
-    <root id="archive" name="StaffSpy.jar">
-      <element id="module-output" name="StaffSpy" />
-    </root>
-  </artifact>
-</component>
