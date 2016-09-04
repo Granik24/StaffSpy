@@ -7,19 +7,19 @@ import org.bukkit.command.CommandSender;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static hoz.ceph.staffspy.Database.connection;
-import static hoz.ceph.staffspy.Database.statement;
+import static hoz.ceph.staffspy.Database.*;
 
 /**
  * Created by Ceph on 14.08.2016.
-*/
+ */
 
 public class Commands implements CommandExecutor {
+    
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-
-        if (args.length == 1 && connection != null) {
+        if (args.length == 1 && checkConnection()) {
             try {
-                ResultSet r = statement.executeQuery("SELECT * FROM `" + Main.tableUsers + "` WHERE playerName = '" + args[0] + "'");
+                statement = connection.createStatement();
+                ResultSet r = statement.executeQuery(getFinalTime(args[0]));
                 String playerName = args[0];
 
                 if (r.next()) {
@@ -33,6 +33,7 @@ public class Commands implements CommandExecutor {
                 } else {
                     sender.sendMessage(Main.pluginPrefix + "Hrac " + playerName + " nebyl nalezen.");
                 }
+                statement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

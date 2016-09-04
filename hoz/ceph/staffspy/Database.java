@@ -29,6 +29,7 @@ public class Database {
                 statement = connection.createStatement();
                 statement.execute(createUserTable);
                 statement.execute(createTimeTable);
+                statement.close();
             } else {
                 Logger.getLogger("Minecraft").log(Level.SEVERE, "Can't connect to the MySQL!");
             }
@@ -46,6 +47,50 @@ public class Database {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static boolean checkConnection() {
+        if (connection != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static String getUsers(String uuid) {
+        return "SELECT * FROM `" + Main.tableUsers + "` WHERE uuid = '" + uuid + "'";
+    }
+
+    public static String getTimes(int id) {
+        return "SELECT * FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'";
+    }
+
+    public static String getFinalTime(String args) {
+        return "SELECT * FROM `" + Main.tableUsers + "` WHERE playerName = '" + args + "'";
+    }
+
+    public static String updatePlayerName(String player, String uuid) {
+        return "UPDATE `" + Main.tableUsers + "` SET playerName = '" + player + "' WHERE UUID = '" + uuid + "'";
+    }
+
+    public static String updatePlayerTime(long time, String dbDate, int id) {
+        return "UPDATE `" + Main.tableTimes + "` SET totalPlayed = '" + time + "' WHERE  date = '" + dbDate + "' AND playerID = '" + id + "'";
+    }
+
+    public static String updateFinalTime(long time, String uuid) {
+        return "UPDATE `" + Main.tableUsers + "` SET totalPlayed = '" + time + "' WHERE UUID = '" + uuid + "'";
+    }
+
+    public static String createPlayerTimes(int id) {
+        return "INSERT INTO `" + Main.tableTimes + "` SET date = NOW(), playerID = '" + id + "', totalPlayed = '0'";
+    }
+
+    public static String createPlayer(String player, String uuid) {
+        return "INSERT INTO `" + Main.tableUsers + "` SET playerName = '" + player + "', UUID = '" + uuid + "', totalPlayed = '0'";
+    }
+
+    public static String sumTotalTime(int id) {
+        return "SELECT SUM(totalPlayed) as totalPlayed FROM `" + Main.tableTimes + "` WHERE playerID = '" + id + "'";
     }
 
     private final static String createUserTable = "CREATE TABLE IF NOT EXISTS `" + Main.tableUsers + "` ("
