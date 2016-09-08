@@ -21,11 +21,11 @@ import static hoz.ceph.staffspy.Database.*;
 public class PlayerListener implements Listener {
     private Main plugin;
     private long loginTime, currentTime;
-    public HashMap<String, Long> players = new HashMap<>();
-    public HashMap<String, Long> times = new HashMap<>();
+    private HashMap<String, Long> players = new HashMap<>();
+    private HashMap<String, Long> times = new HashMap<>();
 
     PlayerListener(Main p) {
-        this.plugin = p;
+        plugin = p;
     }
 
     @EventHandler
@@ -33,7 +33,7 @@ public class PlayerListener implements Listener {
         String UUID = e.getPlayer().getUniqueId().toString();
         String player = e.getPlayer().getName();
 
-        if (Database.checkConnection() && e.getPlayer().hasPermission("staffspy.spy")) {
+        if (checkConnection() && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
                 statement = connection.createStatement();
                 ResultSet rGetUsers = statement.executeQuery(getUsers(UUID)); // Gets player from DB (Users)
@@ -70,7 +70,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         String UUID = e.getPlayer().getUniqueId().toString();
-        if (Database.checkConnection() && e.getPlayer().hasPermission("staffspy.spy")) {
+        if (checkConnection() && e.getPlayer().hasPermission("staffspy.spy")) {
             try {
                 statement = connection.createStatement();
                 ResultSet rGetUsers = statement.executeQuery(getUsers(UUID)); // Gets player from DB (Users)

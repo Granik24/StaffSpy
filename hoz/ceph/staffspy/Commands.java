@@ -14,7 +14,6 @@ import static hoz.ceph.staffspy.Database.*;
  */
 
 public class Commands implements CommandExecutor {
-    
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (args.length == 1 && checkConnection()) {
             try {
@@ -38,6 +37,8 @@ public class Commands implements CommandExecutor {
                 e.printStackTrace();
             }
             return true;
+        } else if(!checkConnection()) {
+            sender.sendMessage(Main.pluginPrefix + "Can't connect to the database!");
         }
         return false;
     }

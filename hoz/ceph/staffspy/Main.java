@@ -63,5 +63,4 @@ public class Main extends JavaPlugin {
         password = getConfig().getString("password");
         getLogger().info("Config loaded");
     }
-
 }

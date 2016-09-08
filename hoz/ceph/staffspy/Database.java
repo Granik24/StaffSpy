@@ -50,11 +50,14 @@ public class Database {
     }
 
     public static boolean checkConnection() {
-        if (connection != null) {
-            return true;
-        } else {
-            return false;
+        try {
+            if (connection != null && !connection.isClosed()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public static String getUsers(String uuid) {
