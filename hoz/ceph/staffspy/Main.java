@@ -17,7 +17,7 @@ public class Main extends JavaPlugin {
     public static String pluginPrefix = "&8[&aStaff&cSpy&8]&r ";
     public static String tableUsers = "SS_USERS";
     public static String tableTimes = "SS_TIMES";
-    public static Logger logger = Logger.getLogger("Minecraft");
+    public static final Logger logger = Logger.getLogger("Minecraft");
 
     private String host, database, username, password;
     private int port;
