@@ -35,7 +35,7 @@ public class Main extends JavaPlugin {
         if (isConfigured) {
             connectSQL(host, database, username, password, port);
         } else {
-            logger.log(Level.SEVERE, "You don't have configured your MySQL yet! Set 'isConfigured' to true if everything is ready!");
+            logger.warning("You don't have configured your MySQL yet! Set 'isConfigured' to true if everything is ready!");
             this.setEnabled(false);
         }
 
@@ -43,14 +43,14 @@ public class Main extends JavaPlugin {
         Commands e = new Commands();
         getCommand("staffspy").setExecutor(e);
 
-        logger.log(Level.INFO, "Plugin was successfully enabled!");
+        logger.info("Plugin was successfully enabled!");
     }
 
     public void onDisable() {
         //Close SQL connect
         closeSQL();
 
-        logger.log(Level.INFO, "Plugin was successfully disabled! Goodbye.");
+        logger.info("Plugin was successfully disabled! Goodbye.");
     }
 
     private void loadConfig() {
@@ -67,6 +67,6 @@ public class Main extends JavaPlugin {
         tableTimes = getConfig().getString("tableTimes");
         username = getConfig().getString("username");
         password = getConfig().getString("password");
-        logger.log(Level.INFO, "Config loaded");
+        logger.info("Config loaded");
     }
 }

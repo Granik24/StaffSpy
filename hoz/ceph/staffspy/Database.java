@@ -32,10 +32,10 @@ public class Database {
                 statement.execute(createTimeTable);
                 statement.close();
             } else {
-                logger.log(Level.SEVERE, "Can't connect to the MySQL!");
+                logger.warning("Can't connect to the MySQL!");
             }
         } catch (ClassNotFoundException | SQLException e) {
-            logger.log(Level.SEVERE, "Check if all SQL values are right writed. If yes, please, contact developer.");
+            logger.warning("Check if all SQL values are right writed. If yes, please, contact developer.");
             e.printStackTrace();
         }
     }
@@ -56,7 +56,7 @@ public class Database {
                 return true;
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Can't connect to the database!");
+            logger.warning("Can't connect to the database!");
             e.printStackTrace();
         }
         return false;
