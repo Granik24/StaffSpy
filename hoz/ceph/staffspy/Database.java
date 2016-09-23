@@ -5,7 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import static hoz.ceph.staffspy.Main.logger;
 
 /**
  * Created by Ceph on 15.08.2016.
@@ -31,11 +32,11 @@ public class Database {
                 statement.execute(createTimeTable);
                 statement.close();
             } else {
-                Logger.getLogger("Minecraft").log(Level.SEVERE, "Can't connect to the MySQL!");
+                logger.log(Level.SEVERE, "Can't connect to the MySQL!");
             }
         } catch (ClassNotFoundException | SQLException e) {
+            logger.log(Level.SEVERE, "Check if all SQL values are right writed. If yes, please, contact developer.");
             e.printStackTrace();
-            Logger.getLogger("Minecraft").log(Level.SEVERE, "Check if all SQL values are right writed. If yes, please, contact developer.");
         }
     }
 
@@ -55,6 +56,7 @@ public class Database {
                 return true;
             }
         } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Can't connect to the database!");
             e.printStackTrace();
         }
         return false;

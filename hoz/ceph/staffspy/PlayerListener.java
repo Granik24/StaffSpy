@@ -1,5 +1,6 @@
 package hoz.ceph.staffspy;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -7,12 +8,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
 import static hoz.ceph.staffspy.Database.*;
+import static hoz.ceph.staffspy.DateUtils.getCurrentTime;
 
 /**
  * Created by Ceph on 07.08.2016.
@@ -30,10 +29,11 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        String UUID = e.getPlayer().getUniqueId().toString();
-        String player = e.getPlayer().getName();
+        Player p = e.getPlayer();
+        String UUID = p.getUniqueId().toString();
+        String playerName = p.getName();
 
-        if (checkConnection() && e.getPlayer().hasPermission("staffspy.spy")) {
+        if (checkConnection() && p.hasPermission("staffspy.spy")) {
             try {
                 statement = connection.createStatement();
                 ResultSet rGetUsers = statement.executeQuery(getUsers(UUID)); // Gets player from DB (Users)
@@ -42,23 +42,20 @@ public class PlayerListener implements Listener {
 
                 if (rGetUsers.next()) {
                     int id = rGetUsers.getInt("id");
-                    statement.execute(updatePlayerName(player, UUID)); // Updates playerName on login
+                    statement.execute(updatePlayerName(playerName, UUID)); // Updates playerName on login
                     ResultSet rGetTimes = statement.executeQuery(getTimes(id)); // Gets player from DB (Times)
 
                     if (rGetTimes.last()) {
                         String date = rGetTimes.getString("date");
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        Date rawDate = new Date();
-                        String currentTime = dateFormat.format(rawDate);
 
-                        if (!currentTime.equals(date)) {
+                        if (!getCurrentTime().equals(date)) {
                             statement.execute(createPlayerTimes(id)); // Creates player if doesn't exist in this date (Times)
                         }
                     } else {
                         statement.execute(createPlayerTimes(id)); // Creates player if doesn't exist in DB (Times)
                     }
                 } else {
-                    statement.execute(createPlayer(player, UUID)); // Creates player if doesn't exist in DB (Users)
+                    statement.execute(createPlayer(playerName, UUID)); // Creates player if doesn't exist in DB (Users)
                 }
                 statement.close();
             } catch (SQLException ex) {
@@ -69,8 +66,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        String UUID = e.getPlayer().getUniqueId().toString();
-        if (checkConnection() && e.getPlayer().hasPermission("staffspy.spy")) {
+        Player p = e.getPlayer();
+        String UUID = p.getUniqueId().toString();
+        if (checkConnection() && p.hasPermission("staffspy.spy")) {
             try {
                 statement = connection.createStatement();
                 ResultSet rGetUsers = statement.executeQuery(getUsers(UUID)); // Gets player from DB (Users)

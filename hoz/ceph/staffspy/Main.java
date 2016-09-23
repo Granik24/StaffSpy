@@ -3,6 +3,11 @@ package hoz.ceph.staffspy;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static hoz.ceph.staffspy.Database.closeSQL;
+import static hoz.ceph.staffspy.Database.connectSQL;
 
 /**
  * Created by Ceph on 07.08.2016.
@@ -12,14 +17,13 @@ public class Main extends JavaPlugin {
     public static String pluginPrefix = "&8[&aStaff&cSpy&8]&r ";
     public static String tableUsers = "SS_USERS";
     public static String tableTimes = "SS_TIMES";
+    public static Logger logger = Logger.getLogger("Minecraft");
 
     private String host, database, username, password;
     private int port;
     private boolean isConfigured = false;
 
     public void onEnable() {
-        getLogger().info("Plugin was successfully enabled!");
-
         //Register listener
         PlayerListener playerListener = new PlayerListener(this);
         getServer().getPluginManager().registerEvents(playerListener, this);
@@ -29,22 +33,24 @@ public class Main extends JavaPlugin {
 
         //Open SQL connect
         if (isConfigured) {
-            Database.connectSQL(host, database, username, password, port);
+            connectSQL(host, database, username, password, port);
         } else {
-            getLogger().warning("You don't have configured your MySQL yet! Set 'isConfigured' to true if everything is ready!");
+            logger.log(Level.SEVERE, "You don't have configured your MySQL yet! Set 'isConfigured' to true if everything is ready!");
             this.setEnabled(false);
         }
 
         //Register commands
         Commands e = new Commands();
         getCommand("staffspy").setExecutor(e);
+
+        logger.log(Level.INFO, "Plugin was successfully enabled!");
     }
 
     public void onDisable() {
-        getLogger().info("Plugin was successfully disabled! Goodbye.");
-
         //Close SQL connect
-        Database.closeSQL();
+        closeSQL();
+
+        logger.log(Level.INFO, "Plugin was successfully disabled! Goodbye.");
     }
 
     private void loadConfig() {
@@ -61,6 +67,6 @@ public class Main extends JavaPlugin {
         tableTimes = getConfig().getString("tableTimes");
         username = getConfig().getString("username");
         password = getConfig().getString("password");
-        getLogger().info("Config loaded");
+        logger.log(Level.INFO, "Config loaded");
     }
 }
